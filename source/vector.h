@@ -216,7 +216,18 @@ public:
     if (m_storage)
       delete[] m_storage;
   }
-  vector(const vector &);
+  vector(const vector& other) {
+    // Perform a deep copy of the elements
+
+    m_capacity = other.m_capacity;
+    m_end = other.m_end;
+    m_storage = new T[m_capacity];
+
+    // Copy each element from the source vector to the new vector
+    for (size_type i = 0; i < m_end; ++i) {
+      m_storage[i] = other.m_storage[i];
+    }
+}
   vector(const std::initializer_list<T> &il) {
     m_capacity = il.size();
     m_storage = new T[m_capacity];
@@ -224,15 +235,56 @@ public:
     // Copy the elements from the il into the array.
     std::copy(il.begin(), il.end(), m_storage);
   }
-  template <typename InputItr> vector(InputItr, InputItr);
+  
+  template <typename InputItr>
+  vector(InputItr first, InputItr last) {
+    // Determine the size of the range
+    size_type range_size = std::distance(first, last);
 
-  vector &operator=(const vector &);
+    // Allocate storage for the elements
+    m_capacity = range_size;
+    m_storage = new T[m_capacity];
+
+    // Copy the elements from the range to the storage
+    std::copy(first, last, m_storage);
+
+    // Update the end iterator
+    m_end = m_capacity;
+  }
+
+  //vector &operator=(const vector &);
+  vector& operator=(const vector& other) {
+  if (this != &other) {  // Check for self-assignment
+    // Deallocate current storage
+    delete[] m_storage;
+
+    // Perform a deep copy of the elements
+    m_capacity = other.m_capacity;
+    m_end = other.m_end;
+    m_storage = new T[m_capacity];
+
+    // Copy each element from the source vector to the target vector
+    for (size_type i = 0; i < m_end; ++i) {
+      m_storage[i] = other.m_storage[i];
+    }
+  }
+  return *this;
+}
 
   //=== [II] ITERATORS
-  iterator begin(void) { return iterator{&m_storage[0]}; }
-  iterator end(void);
-  const_iterator cbegin(void) const;
-  const_iterator cend(void) const;
+  iterator begin(void) {
+     return iterator{&m_storage[0]}; 
+  }
+  iterator end(void) {
+    return iterator{&m_storage[m_end]};  // Points to one position past the last element
+  }
+  const_iterator cbegin(void) const {
+    return const_iterator{&m_storage[0]};  // Points to the beginning of the vector
+  }
+  const_iterator cend(void) const {
+    return const_iterator{&m_storage[m_end]};  // Points to one position past the last element
+  }
+
 
   // [III] Capacity
   size_type size(void) const { return m_end; }
@@ -240,47 +292,314 @@ public:
   bool empty(void) const { return m_end == 0; }
 
   // [IV] Modifiers
-  void clear(void);
-  void push_front(const_reference);
-  void push_back(const_reference);
-  void pop_back(void);
-  void pop_front(void);
+  void clear(void) {
+    delete[] m_storage;  // Deallocate the current storage
+    m_storage = nullptr; // Set the storage pointer to nullptr
+    m_capacity = 0;      // Reset the capacity
+    m_end = 0;           // Reset the size
+  }
+  void push_front(const_reference); //Not TODO
+  void push_back(const_reference value) {
+    if (m_end == m_capacity) {
+      // Need to reallocate storage
+      size_type new_capacity = (m_capacity == 0) ? 1 : 2 * m_capacity;
+      pointer new_storage = new value_type[new_capacity];
+      // Copy existing elements to the new storage
+      for (size_type i = 0; i < m_end; ++i) {
+        new_storage[i] = m_storage[i];
+      }
+      // Deallocate the old storage
+      delete[] m_storage;
+      // Update member variables
+      m_storage = new_storage;
+      m_capacity = new_capacity;
+    }
+    // Add the new element at the end
+    m_storage[m_end] = value;
+    ++m_end;
+  }
 
-  iterator insert(iterator pos_, const_reference value_);
-  iterator insert(const_iterator pos_, const_reference value_);
+  void pop_back(void) {
+    if (m_end > 0) {
+      --m_end;
+    }
+  }
+
+  void pop_front(void); //not TODO
+
+  iterator insert(iterator pos_, const_reference value_) {
+    // Calculate the index of the insertion position
+    size_type index = pos_ - begin();
+    if (m_end == m_capacity) {
+      // Need to reallocate storage
+      size_type new_capacity = (m_capacity == 0) ? 1 : 2 * m_capacity;
+      pointer new_storage = new value_type[new_capacity];
+      // Copy existing elements to the new storage, up to the insertion position
+      for (size_type i = 0; i < index; ++i) {
+        new_storage[i] = m_storage[i];
+      }
+      // Insert the new element at the insertion position
+      new_storage[index] = value_;
+      // Copy the remaining elements to the new storage
+      for (size_type i = index; i < m_end; ++i) {
+        new_storage[i + 1] = m_storage[i];
+      }
+      // Deallocate the old storage
+      delete[] m_storage;
+      // Update member variables
+      m_storage = new_storage;
+      m_capacity = new_capacity;
+      ++m_end;
+      // Return the iterator pointing to the inserted element
+      return begin() + index;
+    } else {
+      // Enough capacity, shift elements to make room for the new element
+      for (size_type i = m_end; i > index; --i) {
+        m_storage[i] = m_storage[i - 1];
+      }
+      // Insert the new element at the insertion position
+      m_storage[index] = value_;
+      ++m_end;
+      // Return the iterator pointing to the inserted element
+      return begin() + index;
+    }
+  }
+
+
+  iterator insert(const_iterator pos_, const_reference value_) {
+    // Convert the const_iterator to an iterator
+    iterator pos{const_cast<iterator>(pos_)};
+
+    // Delegate the insert operation to the iterator-based insert function
+    return insert(pos, value_);
+  }
+
 
   template <typename InputItr>
-  iterator insert(iterator pos_, InputItr first_, InputItr last_);
+  iterator insert(iterator pos_, InputItr first_, InputItr last_) {
+    // Calculate the index of the insertion position
+    size_type index = pos_ - begin();
+    // Calculate the number of elements to insert
+    size_type num_elements = std::distance(first_, last_);
+    if (m_end + num_elements > m_capacity) {
+      // Need to reallocate storage
+      size_type new_capacity = m_capacity + num_elements;
+      pointer new_storage = new value_type[new_capacity];
+      // Copy existing elements to the new storage, up to the insertion position
+      for (size_type i = 0; i < index; ++i) {
+        new_storage[i] = m_storage[i];
+      }
+      // Insert the new elements at the insertion position
+      std::copy(first_, last_, new_storage + index);
+      // Copy the remaining elements to the new storage
+      for (size_type i = index; i < m_end; ++i) {
+        new_storage[i + num_elements] = m_storage[i];
+      }
+      // Deallocate the old storage
+      delete[] m_storage;
+      // Update member variables
+      m_storage = new_storage;
+      m_capacity = new_capacity;
+      m_end += num_elements;
+      // Return the iterator pointing to the first inserted element
+      return begin() + index;
+    } else {
+      // Enough capacity, shift elements to make room for the new elements
+      for (size_type i = m_end - 1; i >= index; --i) {
+        m_storage[i + num_elements] = m_storage[i];
+      }
+      // Insert the new elements at the insertion position
+      std::copy(first_, last_, m_storage + index);
+      // Update m_end to reflect the inserted elements
+      m_end += num_elements;
+      // Return the iterator pointing to the first inserted element
+      return begin() + index;
+    }
+  }
+
   template <typename InputItr>
-  iterator insert(const_iterator pos_, InputItr first_, InputItr last_);
+  iterator insert(const_iterator pos_, InputItr first_, InputItr last_) {
+    // Convert the const_iterator to an iterator
+    iterator pos{const_cast<iterator>(pos_)};
+
+    // Delegate the insert operation to the iterator-based insert function
+    return insert(pos, first_, last_);
+  }
 
   iterator insert(iterator pos_,
-                  const std::initializer_list<value_type> &ilist_);
+                  const std::initializer_list<value_type> &ilist_) {
+    return insert(pos_, ilist_.begin(), ilist_.end());
+  }
   iterator insert(const_iterator pos_,
-                  const std::initializer_list<value_type> &ilist_);
+                  const std::initializer_list<value_type> &ilist_) {
+    // Convert the const_iterator to an iterator
+    iterator pos{const_cast<iterator>(pos_)};
 
-  void reserve(size_type);
-  void shrink_to_fit(void);
+    // Delegate the insert operation to the iterator-based insert function
+    return insert(pos, ilist_.begin(), ilist_.end());
+  }
 
-  void assign(size_type count_, const_reference value_);
-  void assign(const std::initializer_list<T> &ilist);
-  template <typename InputItr> void assign(InputItr first, InputItr last);
 
-  iterator erase(iterator first, iterator last);
-  iterator erase(const_iterator first, const_iterator last);
+  void reserve(size_type new_capacity) {
+    if (new_capacity > m_capacity) {
+      // Allocate new storage with the desired capacity
+      pointer new_storage = new value_type[new_capacity];
+      // Copy existing elements to the new storage
+      for (size_type i = 0; i < m_end; ++i) {
+        new_storage[i] = m_storage[i];
+      }
+      // Deallocate the old storage
+      delete[] m_storage;
+      // Update member variables
+      m_storage = new_storage;
+      m_capacity = new_capacity;
+    }
+  }
 
-  iterator erase(const_iterator pos);
-  iterator erase(iterator pos);
+  void shrink_to_fit(void) {
+    if (m_end < m_capacity) {
+      // Allocate new storage with the desired capacity
+      pointer new_storage = new value_type[m_end];
+      // Copy existing elements to the new storage
+      for (size_type i = 0; i < m_end; ++i) {
+        new_storage[i] = m_storage[i];
+      }
+      // Deallocate the old storage
+      delete[] m_storage;
+      // Update member variables
+      m_storage = new_storage;
+      m_capacity = m_end;
+    }
+  }
+
+  void assign(size_type count_, const_reference value_) {
+    // Resize the vector to the specified count
+    resize(count_);
+    // Fill the vector with the given value
+    for (size_type i = 0; i < m_end; ++i) {
+      m_storage[i] = value_;
+    }
+  }
+
+  void assign(const std::initializer_list<T> &ilist) {
+    // Resize the vector to the size of the initializer list
+    resize(ilist.size());
+    // Copy the elements from the initializer list to the vector
+    size_type i = 0;
+    for (const auto &value : ilist) {
+      m_storage[i++] = value;
+    }
+  }
+
+  template <typename InputItr>
+  void assign(InputItr first, InputItr last) {
+    // Calculate the number of elements in the range
+    size_type count = std::distance(first, last);
+    // Resize the vector to the specified count
+    resize(count);
+    // Copy the elements from the range to the vector
+    size_type i = 0;
+    for (InputItr it = first; it != last; ++it) {
+      m_storage[i++] = *it;
+    }
+  }
+
+
+  iterator erase(iterator first, iterator last) {
+    // Calculate the number of elements to be removed
+    difference_type numElementsToRemove = std::distance(first, last);
+    // Move the elements after the range to be removed
+    iterator newEnd = std::move(last, end(), first);
+    // Update the size of the vector
+    m_end -= numElementsToRemove;
+    // Destroy the remaining elements (optional, depending on the element type)
+    // Return an iterator pointing to the element that follows the last removed element
+    return newEnd;
+  }
+
+iterator erase(const_iterator first, const_iterator last) {
+  // Calculate the number of elements to be removed
+  difference_type numElementsToRemove = std::distance(first, last);
+  // Convert const iterators to non-const iterators
+  iterator nonConstFirst = begin() + std::distance(cbegin(), first);
+  iterator nonConstLast = nonConstFirst + numElementsToRemove;
+  // Move the elements after the range to be removed
+  iterator newEnd = std::move(nonConstLast, end(), nonConstFirst);
+  // Update the size of the vector
+  m_end -= numElementsToRemove;
+  // Destroy the remaining elements (optional, depending on the element type)
+
+  // Return an iterator pointing to the element that follows the last removed element
+  return newEnd;
+}
+
+
+  iterator erase(const_iterator pos) {
+    // Convert const iterator to non-const iterator
+    iterator nonConstPos = begin() + std::distance(cbegin(), pos);
+    // Move the elements after the erased element
+    iterator newEnd = std::move(nonConstPos + 1, end(), nonConstPos);
+    // Destroy the last element (optional, depending on the element type)
+    // Update the size of the vector
+    m_end--;
+    // Return an iterator pointing to the element that follows the erased element
+    return newEnd;
+  }
+
+  iterator erase(iterator pos) {
+    // Move the elements after the erased element
+    iterator newEnd = std::move(pos + 1, end(), pos);
+    // Destroy the last element (optional, depending on the element type)
+    // Update the size of the vector
+    m_end--;
+    // Return an iterator pointing to the element that follows the erased element
+    return newEnd;
+  }
+
 
   // [V] Element access
-  const_reference back(void) const;
-  const_reference front(void) const;
-  reference back(void);
-  reference front(void);
-  const_reference operator[](size_type idx) const { return m_storage[idx]; }
-  reference operator[](size_type idx) { return m_storage[idx]; }
-  const_reference at(size_type) const;
-  reference at(size_type);
+  const_reference back() const {
+    assert(m_end > 0);
+    return m_storage[m_end - 1];
+  }
+
+  const_reference front() const {
+    assert(m_end > 0);
+    return m_storage[0];
+  }
+
+  reference back() {
+    assert(m_end > 0);
+    return m_storage[m_end - 1];
+  }
+  reference front() {
+    assert(m_end > 0);
+    return m_storage[0];
+  }
+  const_reference operator[](size_type idx) const {
+    assert(idx < m_end);
+    return m_storage[idx];
+  }
+
+  reference operator[](size_type idx) {
+    assert(idx < m_end);
+    return m_storage[idx];
+  }
+
+  const_reference at(size_type idx) const {
+    if (idx >= m_end) {
+      throw std::out_of_range("Index out of range");
+    }
+    return m_storage[idx];
+  }
+
+  reference at(size_type idx) {
+    if (idx >= m_end) {
+      throw std::out_of_range("Index out of range");
+    }
+    return m_storage[idx];
+  }
+
   pointer data(void);
   const_reference data(void) const;
 
@@ -317,8 +636,24 @@ private:
 };
 
 // [VI] Operators
-template <typename T> bool operator==(const vector<T> &, const vector<T> &);
-template <typename T> bool operator!=(const vector<T> &, const vector<T> &);
+  template <typename T>
+  bool operator==(const vector<T>& lhs, const vector<T>& rhs) {
+    if (lhs.size() != rhs.size()) {
+      return false;
+    }
+    for (typename vector<T>::size_type i = 0; i < lhs.size(); ++i) {
+      if (lhs[i] != rhs[i]) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  template <typename T>
+  bool operator!=(const vector<T>& lhs, const vector<T>& rhs) {
+    return !(lhs == rhs);
+  }
+
 
 } // namespace sc.
 

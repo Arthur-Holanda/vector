@@ -66,4 +66,4 @@ $ ./build/run_tests
 Program developed by Selan (<selan.santos@ufrn.br>).
 
 &copy; DIMAp/UFRN 2016-2023.
-# vector
+
