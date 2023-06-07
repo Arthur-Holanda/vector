@@ -385,9 +385,42 @@ public:
 
 
   // [III] Capacity
-  size_type size(void) const { return m_end; }
-  size_type capacity(void) const { return m_capacity; }
-  bool empty(void) const { return m_end == 0; }
+
+  /**
+   * \brief Funtion to get the size of a vector
+   * 
+   * This function returns the size of the vector based on the number of 
+   * elements that are currently stored inside of it.
+   * 
+   * \return The last position right after the last element of the 
+   * vector, which indicates the size.
+   */
+  size_type size(void) const { 
+    return m_end; 
+  }
+
+  /**
+   * \brief Funtion to get the capacity of a vector
+   * 
+   * This function returns the capacity of the vector based on 
+   * its homonimous atribute.
+   * 
+   * \return The vector capacity.
+   */
+  size_type capacity(void) const { 
+    return m_capacity; 
+  }
+
+  /**
+   * \brief Funtion to verify if the vector is empty
+   * 
+   * This function verifies if there is any element inside of the vector.
+   * 
+   * \return A logical value for the emptiness of the vector.
+   */
+  bool empty(void) const { 
+    return m_end == 0; 
+  }
 
   // [IV] Modifiers
   void clear(void) {
