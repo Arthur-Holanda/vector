@@ -334,15 +334,51 @@ public:
 
 
   //=== [II] ITERATORS
+
+  /**
+   * \brief Funtion to get an iterator pointing to the first element of vector
+   * 
+   * This function returns the addres of the element that is
+   * stored at the first position of the vector
+   * 
+   * \return The iterator that points to the first element of the vector.
+   */
   iterator begin(void) {
      return iterator{&m_storage[0]}; 
   }
+
+  /**
+   * \brief Funtion to get an iterator pointing to the end of the vector
+   * 
+   * This function returns the addres of the element that is
+   * stored at the last position of the vector
+   * 
+   * \return The iterator that points to the last element of the vector.
+   */
   iterator end(void) {
     return iterator{&m_storage[m_end]};  // Points to one position past the last element
   }
+
+  /**
+   * \brief Funtion to get a constant iterator pointing to the first element of vector
+   * 
+   * This function returns the addres of the element that is
+   * stored at the first position of the vector
+   * 
+   * \return The constant iterator that points to the first element of the vector.
+   */
   const_iterator cbegin(void) const {
     return const_iterator{&m_storage[0]};  // Points to the beginning of the vector
   }
+
+  /**
+   * \brief Funtion to get a constant iterator pointing to the last element of vector
+   * 
+   * This function returns the addres of the element that is
+   * stored at the last position of the vector
+   * 
+   * \return The constant iterator that points to the last element of the vector.
+   */
   const_iterator cend(void) const {
     return const_iterator{&m_storage[m_end]};  // Points to one position past the last element
   }
