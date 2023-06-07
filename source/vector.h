@@ -666,6 +666,7 @@ public:
     return insert(pos, ilist_.begin(), ilist_.end());
   }
 
+
   void reserve(size_type new_capacity) {
     if (new_capacity > m_capacity) {
       // Allocate new storage with the desired capacity
@@ -780,6 +781,15 @@ public:
     return newEnd;
   }
 
+  /**
+   * \brief This function deletes a specific of element of the vector.
+   * 
+   * The function receives the element that is located at the received position.
+   * 
+   * \param pos The const iterator pointing to position where the target is located.
+   * 
+   * \return The const iterator pointing to the the end of the list after the delete
+   */
   iterator erase(const_iterator pos) {
     // Convert const iterator to non-const iterator
     iterator nonConstPos = begin() + std::distance(cbegin(), pos);
@@ -792,6 +802,15 @@ public:
     return newEnd;
   }
 
+  /**
+   * \brief This function deletes a specific of element of the vector.
+   * 
+   * The function receives the element that is located at the received position.
+   * 
+   * \param pos The iterator pointing to position where the target is located.
+   * 
+   * \return The iterator pointing to the the end of the list after the delete
+   */
   iterator erase(iterator pos) {
     // Move the elements after the erased element
     iterator newEnd = std::move(pos + 1, end(), pos);
