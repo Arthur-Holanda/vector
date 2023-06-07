@@ -469,7 +469,6 @@ public:
     ++m_end;
   }
 
-
   /**
    * \brief This function removes the last value if the vector.
    * 
@@ -666,7 +665,16 @@ public:
     return insert(pos, ilist_.begin(), ilist_.end());
   }
 
-
+  /**
+   * \brief This function changes the capacity of the vector
+   * 
+   * The function receives the value of the new capacity, creates a new vector
+   * with this capacity, deallocates the memory of the old storage, and assigns the curente
+   * vector with the new vector. 
+   * 
+   * \param new_capacity The capacity that the vector must have.
+   * 
+   */
   void reserve(size_type new_capacity) {
     if (new_capacity > m_capacity) {
       // Allocate new storage with the desired capacity
@@ -683,6 +691,13 @@ public:
     }
   }
 
+  /**
+   * \brief This function reduces the vector capacity untill it is equal to the ocuppied size.
+   * 
+   * The function verifies if the capacity of the vector is grater than the current ocuppied size,
+   * and decreases the capacity. 
+   * 
+   */
   void shrink_to_fit(void) {
     if (m_end < m_capacity) {
       // Allocate new storage with the desired capacity
@@ -699,6 +714,15 @@ public:
     }
   }
 
+  /**
+   * \brief This function assings n elements of the vector with a specified a value
+   * 
+   * The function receives the value to be assigned and the quantity of elements that
+   * will receive this value. 
+   * 
+   * \param count_ The number of elements that will receive the value.
+   * \param value_ The value to be assigned.
+   */
   void assign(size_type count_, const_reference value_) {
     // Resize the vector to the specified count
     resize(count_);
@@ -708,6 +732,13 @@ public:
     }
   }
 
+  /**
+   * \brief This function assings n elements of the vector with the elements of a list
+   * 
+   * The function receives the list whose elements are to be assigned . 
+   * 
+   * \param ilist The list with the elements to be assigned.
+   */
   void assign(const std::initializer_list<T> &ilist) {
     // Resize the vector to the size of the initializer list
     resize(ilist.size());
@@ -718,6 +749,15 @@ public:
     }
   }
 
+  /**
+   * \brief Template function to assign a range of elements to the vector
+   * 
+   * The function receives the range of elements that must be assigned to the
+   * vector elements. 
+   * 
+   * \param first The iterator pointing to the first element to be assigned.
+   * \param last The iterator pointing to the last element to be assigned.
+   */
   template <typename InputItr>
   void assign(InputItr first, InputItr last) {
     // Calculate the number of elements in the range
