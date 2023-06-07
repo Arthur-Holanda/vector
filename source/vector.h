@@ -255,6 +255,16 @@ public:
     }
   }
 
+  /**
+   * \brief Constructor from initialize list
+   * 
+   * Initializes the vector by copying the 
+   * size of a list, and creating a new vector with this size.
+   * Then, the new vector will receive all the elements of the 
+   * list received as a parameter.
+   * 
+   * \param il The list whose elements will be copied.
+   */
   vector(const std::initializer_list<T> &il) {
     m_capacity = il.size();
     m_storage = new T[m_capacity];
@@ -263,6 +273,18 @@ public:
     std::copy(il.begin(), il.end(), m_storage);
   }
   
+  /**
+   * \brief Constructor from range
+   * 
+   * Initializes the vector by copying a list by range, 
+   * and creates a new vector, whose size will be difference
+   * between the first and last pointer. Then, the elements of the list 
+   * will be copied, using the ranges.
+   * 
+   * \param first The beggining of the list whose elements will be copied.
+   * \param last The ending of the list whose elements will be copied.
+   * 
+   */
   template <typename InputItr>
   vector(InputItr first, InputItr last) {
     // Determine the size of the range
@@ -278,6 +300,18 @@ public:
     // Update the end iterator
     m_end = m_capacity;
   }
+
+  /**
+   * \brief Overloads the = operator.
+   * 
+   * Specifies the behavior of the = operator
+   * when dealing with a vector. It is going to assign the atributes of
+   * a vector to another one.
+   * 
+   * \param other The vector that will be assigned.
+   * 
+   * \return The vector where the assignment happened.
+   */
 
   //vector &operator=(const vector &);
   vector& operator=(const vector& other) {
