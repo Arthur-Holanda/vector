@@ -423,13 +423,32 @@ public:
   }
 
   // [IV] Modifiers
+
+  /**
+   * \brief Function to clear a vector
+   * 
+   * This function deallocate the memory of the vector, set its capacity and 
+   * size to zero, and set the storage pounter to null .
+   * 
+   */
   void clear(void) {
-    delete[] m_storage;  // Deallocate the current storage
-    m_storage = nullptr; // Set the storage pointer to nullptr
-    m_capacity = 0;      // Reset the capacity
-    m_end = 0;           // Reset the size
+    delete[] m_storage;  
+    m_storage = nullptr; 
+    m_capacity = 0;      
+    m_end = 0;           
   }
+
   void push_front(const_reference); //Not TODO
+
+  /**
+   * \brief This function inserts a value at the end of the vector.
+   * 
+   * The function receives a value, assigns it to the vector last element,
+   * and increases the size of the vector.
+   * 
+   * \param value The data that shall be inserted in the vector.
+   * 
+   */
   void push_back(const_reference value) {
     if (m_end == m_capacity) {
       // Need to reallocate storage
@@ -450,6 +469,15 @@ public:
     ++m_end;
   }
 
+
+  /**
+   * \brief This function removes the last value if the vector.
+   * 
+   * The function will verify if the vector has any element, and then it will
+   * make the pointer to the last element decrement, in such a way that the last 
+   * element will not be part of the vector anymore.
+   * 
+   */
   void pop_back(void) {
     if (m_end > 0) {
       --m_end;
@@ -458,6 +486,18 @@ public:
 
   void pop_front(void); //not TODO
 
+  /**
+   * \brief This function inserts a value at a specific position.
+   * 
+   * The function receives a value and a position, and inserts the element
+   * at the desired position by shifting the elements so the elements has 
+   * its own space.
+   * 
+   * \param pos_ The position where the insertion must be done.
+   * \param value The data that shall be inserted in the vector.
+   * 
+   * \return The iterator pointing to the position of the insertion
+   */
   iterator insert(iterator pos_, const_reference value_) {
     // Calculate the index of the insertion position
     size_type index = pos_ - begin();
@@ -496,7 +536,18 @@ public:
     }
   }
 
-
+  /**
+   * \brief This function inserts a value at a specific position.
+   * 
+   * The function receives a value and a position, and inserts the element
+   * at the desired position by shifting the elements so the elements has 
+   * its own space.
+   * 
+   * \param pos_ The position where the insertion must be done.
+   * \param value The data that shall be inserted in the vector.
+   * 
+   * \return The const iterator pointing to the position of the insertion
+   */
   iterator insert(const_iterator pos_, const_reference value_) {
     // Convert the const_iterator to an iterator
     iterator pos{const_cast<iterator>(pos_)};
@@ -505,7 +556,19 @@ public:
     return insert(pos, value_);
   }
 
-
+  /**
+   * \brief This function inserts a list of values at a specific position.
+   * 
+   * The function receives a range and a position, and inserts the elements stored
+   * between that range at the desired position by shifting the elements so the elements has 
+   * its own space.
+   * 
+   * \param pos_ The iterator pointing to the position where the insertion must be done.
+   * \param first The pointer to the first element to be inserted.
+   * \param last The pointer to the last element to be inserted.
+   * 
+   * \return The iterator pointing to the position of the insertion
+   */
   template <typename InputItr>
   iterator insert(iterator pos_, InputItr first_, InputItr last_) {
     // Calculate the index of the insertion position
@@ -548,6 +611,19 @@ public:
     }
   }
 
+  /**
+   * \brief This function inserts a list of values at a specific position.
+   * 
+   * The function receives a range and a position, and inserts the elements stored
+   * between that range at the desired position by shifting the elements so the elements has 
+   * its own space.
+   * 
+   * \param pos_ The constiterator pointing to the position where the insertion must be done.
+   * \param first The pointer to the first element to be inserted.
+   * \param last The pointer to the last element to be inserted.
+   * 
+   * \return The const iterator pointing to the position of the insertion
+   */
   template <typename InputItr>
   iterator insert(const_iterator pos_, InputItr first_, InputItr last_) {
     // Convert the const_iterator to an iterator
@@ -557,10 +633,30 @@ public:
     return insert(pos, first_, last_);
   }
 
-  iterator insert(iterator pos_,
-                  const std::initializer_list<value_type> &ilist_) {
+  /**
+   * \brief This function inserts an initialiazer list of values at a specific position.
+   * 
+   * The function receives a initialize list and inserts its elements at the specified position.
+   * 
+   * \param pos_ The titerator pointing to the position where the insertion must be done.
+   * \param ilist The list whose elements are to be inserted.
+   * 
+   * \return The iterator pointing to the the end of the list after the insertion
+   */
+  iterator insert(iterator pos_, const std::initializer_list<value_type> &ilist_) {
     return insert(pos_, ilist_.begin(), ilist_.end());
   }
+
+  /**
+   * \brief This function inserts an initialiazer list of values at a specific position.
+   * 
+   * The function receives a initialize list and inserts its elements at the specified position.
+   * 
+   * \param pos_ The const iterator pointing to the position where the insertion must be done.
+   * \param ilist The const list whose elements are to be inserted.
+   * 
+   * \return The const iterator pointing to the the end of the list after the insertion
+   */
   iterator insert(const_iterator pos_,
                   const std::initializer_list<value_type> &ilist_) {
     // Convert the const_iterator to an iterator
@@ -569,7 +665,6 @@ public:
     // Delegate the insert operation to the iterator-based insert function
     return insert(pos, ilist_.begin(), ilist_.end());
   }
-
 
   void reserve(size_type new_capacity) {
     if (new_capacity > m_capacity) {
@@ -635,7 +730,17 @@ public:
     }
   }
 
-
+  /**
+   * \brief This function deletes a specific range of the vector elements.
+   * 
+   * The function receives the range to be deleted, calculates the distance between, the first and 
+   * last elements of the range, and moves the elements of the vector in such a way that the range is removed.
+   * 
+   * \param first The pointer to the first element to be erased.
+   * \param last The pointer to the last element to be erased.
+   * 
+   * \return The iterator pointing to the the end of the list after the delete
+   */
   iterator erase(iterator first, iterator last) {
     // Calculate the number of elements to be removed
     difference_type numElementsToRemove = std::distance(first, last);
@@ -648,22 +753,32 @@ public:
     return newEnd;
   }
 
-iterator erase(const_iterator first, const_iterator last) {
-  // Calculate the number of elements to be removed
-  difference_type numElementsToRemove = std::distance(first, last);
-  // Convert const iterators to non-const iterators
-  iterator nonConstFirst = begin() + std::distance(cbegin(), first);
-  iterator nonConstLast = nonConstFirst + numElementsToRemove;
-  // Move the elements after the range to be removed
-  iterator newEnd = std::move(nonConstLast, end(), nonConstFirst);
-  // Update the size of the vector
-  m_end -= numElementsToRemove;
-  // Destroy the remaining elements (optional, depending on the element type)
+  /**
+   * \brief This function deletes a specific range of the vector elements.
+   * 
+   * The function receives the range to be deleted, calculates the distance between, the first and 
+   * last elements of the range, and moves the elements of the vector in such a way that the range is removed.
+   * 
+   * \param first The const iterator pointing to to the first element to be erased.
+   * \param last The const iterator pointing to to the last element to be erased.
+   * 
+   * \return The const iterator pointing to the the end of the list after the delete
+   */
+  iterator erase(const_iterator first, const_iterator last) {
+    // Calculate the number of elements to be removed
+    difference_type numElementsToRemove = std::distance(first, last);
+    // Convert const iterators to non-const iterators
+    iterator nonConstFirst = begin() + std::distance(cbegin(), first);
+    iterator nonConstLast = nonConstFirst + numElementsToRemove;
+    // Move the elements after the range to be removed
+    iterator newEnd = std::move(nonConstLast, end(), nonConstFirst);
+    // Update the size of the vector
+    m_end -= numElementsToRemove;
+    // Destroy the remaining elements (optional, depending on the element type)
 
-  // Return an iterator pointing to the element that follows the last removed element
-  return newEnd;
-}
-
+    // Return an iterator pointing to the element that follows the last removed element
+    return newEnd;
+  }
 
   iterator erase(const_iterator pos) {
     // Convert const iterator to non-const iterator
