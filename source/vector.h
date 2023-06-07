@@ -204,6 +204,16 @@ public:
 
 public:
   //=== [I] SPECIAL MEMBERS (6 OF THEM)
+
+
+  /**
+   * \brief Creates a new Vector with a size.
+   * 
+   * Creates a new Vector, allocating memory to it
+   * and setting its size with the parameter received.
+   * 
+   * \param cp The size of the vector to be created.
+   */
   explicit vector(size_type cp = 0) {
     m_storage = new T[cp];
     m_capacity = cp;
@@ -212,10 +222,26 @@ public:
       m_storage[i] = new T();
     } */
   }
+
+  /**
+   * \brief Class destructor.
+   * 
+   * This method frees the vector.
+   */
   virtual ~vector(void) {
     if (m_storage)
       delete[] m_storage;
   }
+
+  /**
+   * \brief Copy constructor
+   * 
+   * Initializes the vector by copying the 
+   * atributes of the object received by 
+   * reference as a parameter.
+   * 
+   * \param other The vector that will be copied.
+   */
   vector(const vector& other) {
     // Perform a deep copy of the elements
 
@@ -227,7 +253,8 @@ public:
     for (size_type i = 0; i < m_end; ++i) {
       m_storage[i] = other.m_storage[i];
     }
-}
+  }
+
   vector(const std::initializer_list<T> &il) {
     m_capacity = il.size();
     m_storage = new T[m_capacity];
@@ -270,6 +297,7 @@ public:
   }
   return *this;
 }
+
 
   //=== [II] ITERATORS
   iterator begin(void) {
@@ -617,7 +645,12 @@ iterator erase(const_iterator first, const_iterator last) {
     return os_;
   }
   friend void swap(vector<T> &first_, vector<T> &second_) {
-    // enable ADL
+    // enable ADLResize
+resize
+Resize
+resize
+Resize
+resize
     using std::swap;
 
     // Swap each member of the class.
