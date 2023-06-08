@@ -28,30 +28,47 @@ public:
   typedef std::bidirectional_iterator_tag
       iterator_category; //!< Iterator category.
 
-  /*! Create an iterator around a raw pointer.
-   * \param pt_ raw pointer to the container.
+
+  /**
+   * \brief Iterator constructor.
+   * 
+   * Creates a new iterator and assign to nullptr.
+   * 
+   * \param pt The pointer.
    */
   MyForwardIterator(pointer pt = nullptr) : m_ptr(pt) { /* empty */
   }
 
-  /// Access the content the iterator points to.
-  reference operator*(void) const {
-    assert(m_ptr != nullptr);
-    return *m_ptr;
-  }
-
-  /// Overloaded `->` operator.
-  pointer operator->(void) const {
-    assert(m_ptr != nullptr);
-    return m_ptr;
-  }
-
-  /// Assignment operator.
+  /**
+   * \brief Overloads the = operator.
+   * 
+   * Specifies the behavior of the = operator
+   * when dealing with an iterator. It is going to assign the atributes of
+   * a iterator to another one.
+   * 
+   * \param iterator The iterator that will be assigned.
+   * 
+   * \return The iterator where the assignment happened.
+   */
   iterator &operator=(const iterator &) = default;
-  /// Copy constructor.
-  MyForwardIterator(const iterator &) = default;
 
-  /// Pre-increment operator.
+  /**
+   * \brief Copy constructor
+   * 
+   * Initializes iterator by copying another one.
+   * 
+   * \param iterator The iterator that will be copied.
+   */
+  MyForwardIterator(const iterator &) = default;
+  
+  /**
+   * \brief Overloads the ++ operator.
+   * 
+   * Specifies the behavior of the ++ operator
+   * when dealing with an iterator. It is going to increment the iterator.
+   * 
+   * \return The incremented iterator.
+   */
   iterator operator++(void) {
     assert(m_ptr != nullptr); // Check if the iterator is valid
 
@@ -59,7 +76,15 @@ public:
 
     return *this; // Return the updated iterator
   }
-  /// Post-increment operator.
+
+  /**
+   * \brief Overloads the ++ operator.
+   * 
+   * Specifies the behavior of the ++ operator
+   * when dealing with an iterator. It is going to post increment the iterator.
+   * 
+   * \return The post incremented iterator.
+   */
   iterator operator++(int) {
     assert(m_ptr != nullptr); // Check if the iterator is valid
 
@@ -70,7 +95,14 @@ public:
     return original; // Return the original iterator
   }
 
-  /// Pre-decrement operator.
+  /**
+   * \brief Overloads the -- operator.
+   * 
+   * Specifies the behavior of the -- operator
+   * when dealing with an iterator. It is going to post the iterator.
+   * 
+   * \return The decrement iterator.
+   */
   iterator operator--(void) {
     assert(m_ptr != nullptr); // Check if the iterator is valid
 
@@ -79,7 +111,14 @@ public:
     return *this; // Return the updated iterator
   }
 
-  /// Post-decrement operator.
+  /**
+   * \brief Overloads the -- operator.
+   * 
+   * Specifies the behavior of the -- operator
+   * when dealing with an iterator. It is going to post decrement the iterator.
+   * 
+   * \return The post decrement iterator.
+   */
   iterator operator--(int) {
     assert(m_ptr != nullptr); // Check if the iterator is valid
 
@@ -90,35 +129,17 @@ public:
     return original; // Return the original iterator
   }
 
-  iterator &operator+=(difference_type offset) {
-    assert(m_ptr != nullptr); // Check if the iterator is valid
-
-    m_ptr += offset; // Advance the raw pointer by the given offset
-
-    return *this; // Return the updated iterator
-  }
-
-  iterator &operator-=(difference_type offset) {
-    assert(m_ptr != nullptr); // Check if the iterator is valid
-
-    m_ptr -= offset; // Move the raw pointer backward by the given offset
-
-    return *this; // Return the updated iterator
-  }
-
-  friend bool operator<(const iterator& ita, const iterator& itb) {
-    return ita.m_ptr < itb.m_ptr;
-  }
-  friend bool operator>(const iterator& ita, const iterator& itb) {
-    return itb < ita; // Utilize the already defined operator< to implement operator>
-  }
-  friend bool operator>=(const iterator& ita, const iterator& itb) {
-    return !(ita < itb); // Utilize the already defined operator< to implement operator>=
-  }
-  friend bool operator<=(const iterator& ita, const iterator& itb) {
-    return !(ita > itb); // Utilize the already defined operator> to implement operator<=
-  }
-
+  /**
+   * \brief Overloads the + operator.
+   * 
+   * Specifies the behavior of the + operator
+   * when dealing with an iterator. It is going to add a number to an iterator.
+   * 
+   * \param  offset The number to be added.
+   * \param it The iterator.
+   * 
+   * \return The updated iterator.
+   */
   friend iterator operator+(difference_type offset, iterator it) {
     assert(it.m_ptr != nullptr); // Check if the iterator is valid
 
@@ -126,6 +147,18 @@ public:
 
     return it; // Return the updated iterator
   }
+
+  /**
+   * \brief Overloads the + operator.
+   * 
+   * Specifies the behavior of the + operator
+   * when dealing with an iterator. It is going to add an iterator to a number.
+   * 
+   * \param it The iterator.
+   * \param  offset The number to be added.
+   * 
+   * \return The updated iterator.
+   */
   friend iterator operator+(iterator it, difference_type offset) {
     assert(it.m_ptr != nullptr); // Check if the iterator is valid
 
@@ -133,6 +166,18 @@ public:
 
     return it; // Return the updated iterator
   }
+
+  /**
+   * \brief Overloads the - operator.
+   * 
+   * Specifies the behavior of the - operator
+   * when dealing with an iterator. It is going to subtract an iterator to a number.
+   * 
+   * \param it The iterator.
+   * \param  offset The number to be subtracted.
+   * 
+   * \return The updated iterator.
+   */
   friend iterator operator-(iterator it, difference_type offset) {
     assert(it.m_ptr != nullptr); // Check if the iterator is valid
 
@@ -141,24 +186,149 @@ public:
     return it; // Return the updated iterator
   }
 
-  /// Equality operator.
-  bool operator==(const iterator& rhs_) const {
-    return m_ptr == rhs_.m_ptr; // Compare the raw pointers of the iterators
+  /**
+   * \brief Overloads the += operator.
+   * 
+   * Specifies the behavior of the += operator
+   * when dealing with an iterator. It is going to increment the iterator
+   * with the specified offset.
+   * 
+   * \param  offset The number to be incremented.
+   * 
+   * \return The updated iterator.
+   */
+  iterator &operator+=(difference_type offset) {
+    assert(m_ptr != nullptr); // Check if the iterator is valid
+
+    m_ptr += offset; // Advance the raw pointer by the given offset
+
+    return *this; // Return the updated iterator
   }
 
-  /// Not equality operator.
-  bool operator!=(const iterator& rhs_) const {
-    return !(*this == rhs_); // Utilize the already defined operator== to implement operator!=
+  /**
+   * \brief Overloads the -= operator.
+   * 
+   * Specifies the behavior of the -= operator
+   * when dealing with an iterator. It is going to decrement the iterator
+   * with the specified offset.
+   * 
+   * \param  offset The number to be decrement.
+   * 
+   * \return The updated iterator.
+   */
+  iterator &operator-=(difference_type offset) {
+    assert(m_ptr != nullptr); // Check if the iterator is valid
+
+    m_ptr -= offset; // Move the raw pointer backward by the given offset
+
+    return *this; // Return the updated iterator
   }
 
-
-  /// Returns the difference between two iterators.
+  /**
+   * \brief Overloads the - operator.
+   * 
+   * Specifies the behavior of the - operator
+   * when dealing with an iterator. It is going to calculate
+   * the difference between two operators.
+   * 
+   * \param rhs The iterator that will be subtract the left side iterator.
+   * 
+   * \return The updated iterator.
+   */
   difference_type operator-(const iterator& rhs_) const {
     assert(m_ptr != nullptr && rhs_.m_ptr != nullptr); // Check if the iterators are valid
 
     return m_ptr - rhs_.m_ptr; // Calculate the difference between the raw pointers
   }
 
+  /**
+   * \brief Overloads the * operator.
+   * 
+   * Specifies the behavior of the * operator
+   * when dealing with an iterator. It is going to dereference the pointer.
+   * 
+   * \return The content of the iterator.
+   */
+  reference operator*(void) const {
+    assert(m_ptr != nullptr);
+    return *m_ptr;
+  }
+
+  /**
+   * \brief Overloads the == operator.
+   * 
+   * Specifies the behavior of the == operator
+   * when dealing with an iterator. It is going return whether two iterator are equal.
+   * It is going to be done by comparing the two pointers.
+   * 
+   * \param rhs The iterator of the right side of the comparision.
+   * 
+   * \return The logical value of the comparision.
+   */
+  bool operator==(const iterator& rhs_) const {
+    return m_ptr == rhs_.m_ptr; // Compare the raw pointers of the iterators
+  }
+
+  /**
+   * \brief Overloads the != operator.
+   * 
+   * Specifies the behavior of the != operator
+   * when dealing with an iterator. It is going return whether two iterator are different.
+   * It is going to be done by comparing the two pointers.
+   * 
+   * \param rhs The iterator of the right side of the comparision.
+   * 
+   * \return The logical value of the comparision.
+   */
+  bool operator!=(const iterator& rhs_) const {
+    return !(*this == rhs_); // Utilize the already defined operator== to implement operator!=
+  }
+
+  /**
+   * \brief Overloads the < operator.
+   * 
+   * Specifies the behavior of the < operator
+   * when dealing with an iterator. It is going to return whether the
+   * left side iterator is less than the right side iterator.
+   * 
+   * \param ita The iterator of the left side of the comparision.
+   * \param itb The iterator of the right side of the comparision.
+   * 
+   * \return The logical value of the comparision.
+   */
+  friend bool operator<(const iterator& ita, const iterator& itb) {
+    return ita.m_ptr < itb.m_ptr;
+  }
+
+  /**
+   * \brief Overloads the > operator.
+   * 
+   * Specifies the behavior of the > operator
+   * when dealing with an iterator. It is going to return whether the
+   * left side iterator is greater than the right side iterator.
+   * 
+   * \param ita The iterator of the left side of the comparision.
+   * \param itb The iterator of the right side of the comparision.
+   * 
+   * \return The logical value of the comparision.
+   */
+  friend bool operator>(const iterator& ita, const iterator& itb) {
+    return itb < ita; // Utilize the already defined operator< to implement operator>
+  }
+
+  /// Overloaded `->` operator.
+  pointer operator->(void) const {
+    assert(m_ptr != nullptr);
+    return m_ptr;
+  }
+
+  friend bool operator>=(const iterator& ita, const iterator& itb) {
+    return !(ita < itb); // Utilize the already defined operator< to implement operator>=
+  }
+
+  friend bool operator<=(const iterator& ita, const iterator& itb) {
+    return !(ita > itb); // Utilize the already defined operator> to implement operator<=
+  }
 
   /// Stream extractor operator.
   friend std::ostream &operator<<(std::ostream &os_,
@@ -1068,4 +1238,4 @@ resize
 } // namespace sc.
 
 #endif
-   * 
+  
