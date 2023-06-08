@@ -600,10 +600,7 @@ public:
    * 
    */
   void clear(void) {
-    delete[] m_storage;  
-    m_storage = nullptr; 
-    m_capacity = 0;      
-    m_end = 0;           
+    m_end = 0;
   }
 
   void push_front(const_reference); //Not TODO
