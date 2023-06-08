@@ -498,7 +498,7 @@ public:
     }
   }
   return *this;
-}
+  }
 
 
   //=== [II] ITERATORS
@@ -600,7 +600,10 @@ public:
    * 
    */
   void clear(void) {
-    m_end = 0;
+    //delete[] m_storage;  
+    //m_storage = nullptr; 
+    //m_capacity = 0;     
+    m_end = 0;           
   }
 
   void push_front(const_reference); //Not TODO
@@ -889,13 +892,28 @@ public:
    * \param value_ The value to be assigned.
    */
   void assign(size_type count_, const_reference value_) {
-    // Resize the vector to the specified count
-    resize(count_);
-    // Fill the vector with the given value
-    for (size_type i = 0; i < m_end; ++i) {
-      m_storage[i] = value_;
-    }
+      // Check if the vector needs to be resized
+      if (count_ > m_capacity) {
+          // Allocate new memory for the vector
+          T* newStorage = new T[count_];
+          // Copy the elements from the old storage to the new storage
+          for (size_type i = 0; i < m_end; ++i) {
+              newStorage[i] = m_storage[i];
+          }
+          // Deallocate the old storage
+          delete[] m_storage;
+          // Update the storage pointer and capacity
+          m_storage = newStorage;
+          m_capacity = count_;
+      }
+      // Update the size of the vector
+      m_end = count_;
+      // Fill the vector with the given value
+      for (size_type i = 0; i < m_end; ++i) {
+          m_storage[i] = value_;
+      }
   }
+
 
   /**
    * \brief This function assings n elements of the vector with the elements of a list
@@ -904,15 +922,26 @@ public:
    * 
    * \param ilist The list with the elements to be assigned.
    */
-  void assign(const std::initializer_list<T> &ilist) {
-    // Resize the vector to the size of the initializer list
-    resize(ilist.size());
-    // Copy the elements from the initializer list to the vector
-    size_type i = 0;
-    for (const auto &value : ilist) {
-      m_storage[i++] = value;
-    }
+  void assign(const std::initializer_list<T>& ilist) {
+      // Check if the initializer list size exceeds the current capacity
+      if (ilist.size() > m_capacity) {
+          // Allocate new memory for the vector
+          T* newStorage = new T[ilist.size()];
+          // Deallocate the old storage
+          delete[] m_storage;
+          // Update the storage pointer and capacity
+          m_storage = newStorage;
+          m_capacity = ilist.size();
+      }
+      // Update the size of the vector
+      m_end = ilist.size();
+      // Copy the elements from the initializer list to the vector
+      size_type i = 0;
+      for (const auto& value : ilist) {
+          m_storage[i++] = value;
+      }
   }
+
 
   /**
    * \brief Template function to assign a range of elements to the vector
@@ -925,16 +954,27 @@ public:
    */
   template <typename InputItr>
   void assign(InputItr first, InputItr last) {
-    // Calculate the number of elements in the range
-    size_type count = std::distance(first, last);
-    // Resize the vector to the specified count
-    resize(count);
-    // Copy the elements from the range to the vector
-    size_type i = 0;
-    for (InputItr it = first; it != last; ++it) {
-      m_storage[i++] = *it;
-    }
+      // Calculate the number of elements in the range
+      size_type count = std::distance(first, last);
+      // Check if the range size exceeds the current capacity
+      if (count > m_capacity) {
+          // Allocate new memory for the vector
+          T* newStorage = new T[count]; 
+          // Deallocate the old storage
+          delete[] m_storage;
+          // Update the storage pointer and capacity
+          m_storage = newStorage;
+          m_capacity = count;
+      }
+      // Update the size of the vector
+      m_end = count;
+      // Copy the elements from the range to the vector
+      size_type i = 0;
+      for (InputItr it = first; it != last; ++it) {
+          m_storage[i++] = *it;
+      }
   }
+
 
   /**
    * \brief This function deletes a specific range of the vector elements.
@@ -949,13 +989,11 @@ public:
    */
   iterator erase(iterator first, iterator last) {
     // Calculate the number of elements to be removed
-    difference_type numElementsToRemove = std::distance(first, last);
+    auto numElementsToRemove = std::distance(first, last);
     // Move the elements after the range to be removed
     iterator newEnd = std::move(last, end(), first);
     // Update the size of the vector
     m_end -= numElementsToRemove;
-    // Destroy the remaining elements (optional, depending on the element type)
-    // Return an iterator pointing to the element that follows the last removed element
     return newEnd;
   }
 
@@ -972,7 +1010,7 @@ public:
    */
   iterator erase(const_iterator first, const_iterator last) {
     // Calculate the number of elements to be removed
-    difference_type numElementsToRemove = std::distance(first, last);
+    auto numElementsToRemove = std::distance(first, last);
     // Convert const iterators to non-const iterators
     iterator nonConstFirst = begin() + std::distance(cbegin(), first);
     iterator nonConstLast = nonConstFirst + numElementsToRemove;
@@ -1000,7 +1038,6 @@ public:
     iterator nonConstPos = begin() + std::distance(cbegin(), pos);
     // Move the elements after the erased element
     iterator newEnd = std::move(nonConstPos + 1, end(), nonConstPos);
-    // Destroy the last element (optional, depending on the element type)
     // Update the size of the vector
     m_end--;
     // Return an iterator pointing to the element that follows the erased element
@@ -1019,7 +1056,6 @@ public:
   iterator erase(iterator pos) {
     // Move the elements after the erased element
     iterator newEnd = std::move(pos + 1, end(), pos);
-    // Destroy the last element (optional, depending on the element type)
     // Update the size of the vector
     m_end--;
     // Return an iterator pointing to the element that follows the erased element
@@ -1163,11 +1199,6 @@ public:
   }
   friend void swap(vector<T> &first_, vector<T> &second_) {
     // enable ADLResize
-resize
-Resize
-resize
-Resize
-resize
     using std::swap;
 
     // Swap each member of the class.

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20.0)
+cmake_minimum_required(VERSION 3.22.1)
 project ( Vector VERSION 1.0 LANGUAGES CXX )
 
 # Using TestManager Library

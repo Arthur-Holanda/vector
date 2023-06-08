@@ -23,61 +23,61 @@
 // Ctro that receives a size as argument. It crates an empty vector with size elements.
 #define CTRO_SIZE YES
 // Ctro that receives a list of values as its initial value.
-#define LIST_CTRO NO
+#define LIST_CTRO YES
 // Ctro that receives a range of values as its initial value.
-#define CTRO_RANGE NO
+#define CTRO_RANGE YES
 // Copy Ctro: creates a vector based on another passed in as argument.
-#define CTRO_COPY NO
+#define CTRO_COPY YES
 // Assign operator, as in vec1 = vec2;
-#define ASSIGN_OP NO
+#define ASSIGN_OP YES
 // Initializer list assignment, as in vector<int> vec = { 1, 2, 3 };
-#define INITIALISZER_ASSIGNMENT NO
+#define INITIALISZER_ASSIGNMENT YES
 // Size method
-#define SIZE NO
+#define SIZE YES
 // Clear method
-#define CLEAR NO
+#define CLEAR YES
 // Push back method
-#define PUSH_BACK NO
+#define PUSH_BACK YES
 // Pop back method
-#define POP_BACK NO
+#define POP_BACK YES
 // Reference front, as in vec.front() = 3;
-#define REF_FRONT NO
+#define REF_FRONT YES
 // Const front, as in x = vec.front();
-#define CONST_FRONT NO
+#define CONST_FRONT YES
 // Reference back, as in vec.back() = 3;
-#define REF_BACK NO
+#define REF_BACK YES
 // Const back, as in x = vec.back();
-#define CONST_BACK NO
+#define CONST_BACK YES
 // Assign `count` elements with `value` to the vector: vec.assign(3,value);
-#define ASSIGN_COUNT_VALUES NO
+#define ASSIGN_COUNT_VALUES YES
 // Const index access operator, as in x = vec[3];
-#define CONST_INDEX_OP NO
+#define CONST_INDEX_OP YES
 // Reference index access operator, as in vec[3] = x;
-#define REF_INDEX_OP NO
+#define REF_INDEX_OP YES
 // Const index access operator with bounds check, as in x = vec.at(3);
-#define CONST_AT_INDEX NO
+#define CONST_AT_INDEX YES
 // Reference index access operator with bounds check, as in vec.at(3) = x;
-#define REF_AT_INDEX NO
+#define REF_AT_INDEX YES
 // Reserve methos, that increases the vector storage capacity explicitly.
-#define RESERVE NO
+#define RESERVE YES
 // Storage capacity of the vector.
-#define CAPACITY NO
+#define CAPACITY YES
 // Shrink storage memory so that the capacity is the same as the # of elements currently stored.
-#define SHRINK NO
+#define SHRINK YES
 // Equality operator
-#define EQUAL_OP NO
+#define EQUAL_OP YES
 // Different operator
-#define DIFFERENT_OP NO
+#define DIFFERENT_OP YES
 // Insert a single values before pos
-#define INSERT_SINGLE_VALUE NO
+#define INSERT_SINGLE_VALUE YES
 // Insert a range of elements before pos
-#define INSERT_RANGE NO
+#define INSERT_RANGE YES
 // Insert a initializer list of elements before pos
-#define INSERT_INITIALIZER NO
+#define INSERT_INITIALIZER YES
 // Erase a range of elements begining at pos
-#define ERASE_RANGE NO
+#define ERASE_RANGE YES
 // Erase a single values at pos
-#define ERASE_SINGLE_VALUE NO
+#define ERASE_SINGLE_VALUE YES
 
 /// Tests the basic operations with a vector of integers.
 template <typename T, size_t S>
