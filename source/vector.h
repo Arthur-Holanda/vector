@@ -1019,6 +1019,21 @@ resize
   };
 
   // [VI] Operators
+
+  /**
+   * \brief Overloads the == operator.
+   * 
+   * Specifies the behavior of the == operator
+   * when dealing with a vector. It is going return whether two vector are equal.
+   * It is going to be done by comparing the sizes. If the sizes are different, the functin will
+   * end return false, otherwise, it will traverse the whole vector comparing it with each element
+   * of the other vector.
+   * 
+   * \param lhs The vector of the left side of the comparision.
+   * \param rhs The vector of the right side of the comparision.
+   * 
+   * \return The logical value of the comparision.
+   */
   template <typename T>
   bool operator==(const vector<T>& lhs, const vector<T>& rhs) {
     if (lhs.size() != rhs.size()) {
@@ -1032,6 +1047,18 @@ resize
     return true;
   }
 
+  /**
+   * \brief Overloads the != operator.
+   * 
+   * Specifies the behavior of the != operator
+   * when dealing with a vector. It is going return whether two vector are different.
+   * It is going to be done by calling the operator== function and returning the logical value of its return.
+   * 
+   * \param lhs The vector of the left side of the comparision.
+   * \param rhs The vector of the right side of the comparision.
+   * 
+   * \return The logical value of the comparision.
+   */
   template <typename T>
   bool operator!=(const vector<T>& lhs, const vector<T>& rhs) {
     return !(lhs == rhs);
@@ -1041,3 +1068,4 @@ resize
 } // namespace sc.
 
 #endif
+   * 
