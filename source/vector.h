@@ -312,8 +312,6 @@ public:
    * 
    * \return The vector where the assignment happened.
    */
-
-  //vector &operator=(const vector &);
   vector& operator=(const vector& other) {
   if (this != &other) {  // Check for self-assignment
     // Deallocate current storage
@@ -863,34 +861,100 @@ public:
 
 
   // [V] Element access
+
+  /**
+   * \brief This function returns the last element of the vector.
+   * 
+   * The function returns a const reference to the last element of the vector
+   * by accessing the position right before the pointer to the end.
+   * 
+   * \return The const reference to the last element.
+   */
   const_reference back() const {
     assert(m_end > 0);
     return m_storage[m_end - 1];
   }
 
+  /**
+   * \brief This function returns the first element of the vector.
+   * 
+   * The function returns a const reference to the first element of the vector
+   * by accessing the position of index zero.
+   * 
+   * \return The const reference to the first element.
+   */
   const_reference front() const {
     assert(m_end > 0);
     return m_storage[0];
   }
 
+  /**
+   * \brief This function returns the last element of the vector.
+   * 
+   * The function returns a reference to the last element of the vector
+   * by accessing the position right before the pointer to the end.
+   * 
+   * \return The reference to the last element.
+   */
   reference back() {
     assert(m_end > 0);
     return m_storage[m_end - 1];
   }
+
+  /**
+   * \brief This function returns the first element of the vector.
+   * 
+   * The function returns a reference to the first element of the vector
+   * by accessing the position of index zero.
+   * 
+   * \return The reference to the first element.
+   */
   reference front() {
     assert(m_end > 0);
     return m_storage[0];
   }
+
+  /**
+   * \brief Overloads the [] operator.
+   * 
+   * Specifies the behavior of the [] operator
+   * when dealing with a vector. It is going return the value 
+   * stored at the specified index.
+   * 
+   * \param idx The index to be searched.
+   * 
+   * \return The const reference to the value stored at the searched index.
+   */
   const_reference operator[](size_type idx) const {
     assert(idx < m_end);
     return m_storage[idx];
   }
 
+  /**
+   * \brief Overloads the [] operator.
+   * 
+   * Specifies the behavior of the [] operator
+   * when dealing with a vector. It is going return the value 
+   * stored at the specified index.
+   * 
+   * \param idx The index to be searched.
+   * 
+   * \return The reference to the value stored at the searched index.
+   */
   reference operator[](size_type idx) {
     assert(idx < m_end);
     return m_storage[idx];
   }
 
+  /**
+   * \brief Returns the value of a specific index.
+   * 
+   * It is going return the value stored at the specified index.
+   * 
+   * \param idx The index to be searched.
+   * 
+   * \return The const reference to the value stored at the searched index.
+   */
   const_reference at(size_type idx) const {
     if (idx >= m_end) {
       throw std::out_of_range("Index out of range");
@@ -898,6 +962,15 @@ public:
     return m_storage[idx];
   }
 
+  /**
+   * \brief Returns the value of a specific index.
+   * 
+   * It is going return the value stored at the specified index.
+   * 
+   * \param idx The index to be searched.
+   * 
+   * \return The reference to the value stored at the searched index.
+   */
   reference at(size_type idx) {
     if (idx >= m_end) {
       throw std::out_of_range("Index out of range");
@@ -936,16 +1009,16 @@ resize
     swap(first_.m_storage, second_.m_storage);
   }
 
-private:
-  bool full(void) const;
+  private:
+    bool full(void) const;
 
-  size_type
-      m_end; //!< The list's current size (or index past-last valid element).
-  size_type m_capacity; //!< The list's storage capacity.
-  T *m_storage;         //!< The list's data storage area.
-};
+    size_type
+        m_end; //!< The list's current size (or index past-last valid element).
+    size_type m_capacity; //!< The list's storage capacity.
+    T *m_storage;         //!< The list's data storage area.
+  };
 
-// [VI] Operators
+  // [VI] Operators
   template <typename T>
   bool operator==(const vector<T>& lhs, const vector<T>& rhs) {
     if (lhs.size() != rhs.size()) {
