@@ -1062,7 +1062,6 @@ public:
     return newEnd;
   }
 
-
   // [V] Element access
 
   /**
